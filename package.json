@@ -1,0 +1,51 @@
+{
+   "name": "bs-deriving",
+   "version": "12.0.0-pre.1",
+   "description": "Type-driven code generation for OCaml >=4.02 and BuckleScript",
+   "main": "index.js",
+   "directories": {
+      "example": "src_examples"
+   },
+   "devDependencies": {
+      "bs-platform": "^5.0.4"
+   },
+   "peerDependencies": {
+      "bs-platform": ">=4.x"
+   },
+   "scripts": {
+      "prepare": "npm run clean && bsb -make-world",
+      "clean": "bsb -clean-world",
+      "test": "echo \"Error: no test specified\" && exit 1"
+   },
+   "files": [
+      "bsconfig.json",
+      "bs_deriving.opam",
+      "src_examples/**/*.ml",
+      "src_examples/**/*.mli",
+      "src_examples/**/*.bs.js",
+      "src/**/*.ml",
+      "src/**/*.mli",
+      "src/**/*.bs.js",
+      "src_plugins/**/*.ml",
+      "src_plugins/**/*.mli",
+      "src_plugins/**/*.bs.js",
+      "src_test/**/*.ml",
+      "src_test/**/*.mli",
+      "src_test/**/*.bs.js",
+      "!**/dune",
+      "!**/.merlin"
+   ],
+   "repository": {
+      "type": "git",
+      "url": "git+https://github.com/ELLIOTTCABLE/bs-deriving.git"
+   },
+   "author": "whitequark <whitequark@whitequark.org>",
+   "license": "MIT",
+   "bugs": {
+      "url": "https://github.com/ELLIOTTCABLE/bs-deriving/issues"
+   },
+   "homepage": "https://github.com/ELLIOTTCABLE/bs-deriving#readme",
+   "dependencies": {
+      "@elliottcable/bs-result": "^12.0.0-pre.2"
+   }
+}

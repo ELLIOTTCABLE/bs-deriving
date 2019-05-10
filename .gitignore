@@ -7,3 +7,14 @@ pkg/META
 src_test/_tags
 .merlin
 _opam
+
+# BuckleScript
+node_modules/
+**/lib/bs
+**/lib/ocaml
+*.cmj
+*.bs.js
+*.mlast*
+*.mliast*
+
+bs-deriving-*.tgz

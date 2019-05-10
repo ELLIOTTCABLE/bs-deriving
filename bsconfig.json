@@ -1,0 +1,17 @@
+{
+   "name": "bs-deriving",
+   "version": "12.0.0-pre.1",
+   "sources": [
+      {
+         "dir": "src/runtime"
+      }
+   ],
+   "bs-dependencies": ["bs-result"],
+   "package-specs": {
+      "module": "commonjs",
+      "in-source": true
+   },
+   "suffix": ".bs.js",
+   "bsc-flags": ["-bs-super-errors", "-bs-no-version-header"],
+   "refmt": 3
+}
