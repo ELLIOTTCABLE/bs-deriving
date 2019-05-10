@@ -6,7 +6,7 @@
          "dir": "src/runtime"
       }
    ],
-   "bs-dependencies": ["bs-result"],
+   "bs-dependencies": ["@elliottcable/bs-result"],
    "package-specs": {
       "module": "commonjs",
       "in-source": true
