@@ -47,5 +47,18 @@
    "homepage": "https://github.com/ELLIOTTCABLE/bs-deriving#readme",
    "dependencies": {
       "@elliottcable/bs-result": "^12.0.0-pre.2"
-   }
+   },
+   "keywords": [
+      "BuckleScript",
+      "ReasonML",
+      "OCaml",
+      "PPX",
+      "AST",
+      "transpiler",
+      "tool",
+      "codegen",
+      "functional",
+      "types",
+      "static-typing"
+   ]
 }
