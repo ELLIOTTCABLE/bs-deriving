@@ -1,0 +1,21 @@
+{
+   "name": "bs-deriving-examples",
+   "sources": [
+      {
+         "dir": "../src/runtime"
+      },
+      {
+         "dir": "./",
+         "type": "dev"
+      }
+   ],
+   "ppx-flags": ["ppx-deriving/ppx.js"],
+   "bs-dependencies": ["@elliottcable/bs-result"],
+   "package-specs": {
+      "module": "commonjs",
+      "in-source": true
+   },
+   "suffix": ".bs.js",
+   "bsc-flags": ["-bs-super-errors", "-bs-no-version-header"],
+   "refmt": 3
+}
