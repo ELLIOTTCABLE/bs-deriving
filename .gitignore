@@ -10,11 +10,12 @@ _opam
 
 # BuckleScript
 node_modules/
-**/lib/bs
-**/lib/ocaml
+**/lib/
 *.cmj
 *.bs.js
 *.mlast*
 *.mliast*
 
 bs-deriving-*.tgz
+ppx/
+dist/ppx-deriving-*.zip
