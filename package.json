@@ -16,9 +16,21 @@
       "bs-platform": ">=4.x"
    },
    "scripts": {
-      "prepare": "npm run clean && bsb -make-world",
-      "clean": "bsb -clean-world",
-      "test": "echo \"Error: no test specified\" && exit 1"
+      "clean:examples": "npm run clean:ppx && cd src_examples && bsb -clean-world",
+      "build:examples": "npm run build:ppx && cd src_examples && bsb -make-world",
+      "clean:runtime": "bsb -clean-world",
+      "build:runtime": "bsb -make-world",
+      "clean:ppx": "dune clean",
+      "build:ppx": "npm run clean:ppx && dune build src_test/all/test_deriving_all.exe && node scripts/package.js",
+      "clean": "npm run clean:runtime && npm run clean:ppx",
+      "build": "npm run build:runtime && npm run build:ppx",
+      "prepare": "npm run clean && npm run build:runtime",
+      "preversion": "./scripts/preversion.sh",
+      "version": "./scripts/version.sh",
+      "test:ppx": "dune runtest",
+      "test:examples": "node src_examples/print_test.bs.js",
+      "test": "npm run test:ppx && npm run test:examples",
+      "travis": "./scripts/travis.sh"
    },
    "files": [
       "bsconfig.json",
