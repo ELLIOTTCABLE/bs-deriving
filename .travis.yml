@@ -1,14 +1,65 @@
-language: c
-sudo: false
-dist: xenial
-install: wget https://raw.githubusercontent.com/ocaml/ocaml-ci-scripts/master/.travis-opam.sh
-script: bash -ex .travis-opam.sh
+sudo: required
+git:
+   depth: 3
+
+language: node_js
+node_js:
+   - "10"
+
+cache:
+   directories:
+      - $HOME/.opam
+      - $HOME/.npm
+
+install: STAGE=install npm run travis
+
+script: STAGE=test npm run travis
+
+jobs:
+   include:
+      - stage: deploy
+        os: linux
+        env: COMPONENT=ppx-examples-test
+        script: STAGE=deploy npm run travis
+        deploy: &gh-release
+           provider: releases
+           on:
+              tags: true
+           skip_cleanup: true
+           api_key:
+              secure: LIES
+           file_glob: true
+           file: dist/*
+           overwrite: true
+           draft: true
+      - os: linux
+        env: COMPONENT=ppx-examples-test GENERATION=next
+        script: STAGE=deploy npm run travis
+        deploy: *gh-release
+      - os: osx
+        env: COMPONENT=ppx-examples-test
+        script: STAGE=deploy npm run travis
+        deploy: *gh-release
+      - os: osx
+        env: COMPONENT=ppx-examples-test GENERATION=next
+        script: STAGE=deploy npm run travis
+        deploy: *gh-release
+
 env:
-  matrix:
-  - OCAML_VERSION=4.03
-  - OCAML_VERSION=4.04
-  - OCAML_VERSION=4.05
-  - OCAML_VERSION=4.06
-  - OCAML_VERSION=4.07
+   - COMPONENT=ppx-examples-test
+   - COMPONENT=ppx-examples-test GENERATION=latest
+   - COMPONENT=ppx-examples-test GENERATION=next
+   - COMPONENT=runtime
+   - COMPONENT=runtime GENERATION=latest
+   - COMPONENT=runtime GENERATION=next
+
+# Allow failures on the upcoming major version of BuckleScript
+#matrix:
+#   fast_finish: true
+#   allow_failures:
+#      - env: COMPONENT=ppx-examples-test GENERATION=next
+#      - env: COMPONENT=runtime GENERATION=next
+
 os:
-  - linux
+   - linux
+   - osx
