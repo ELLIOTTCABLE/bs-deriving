@@ -1,17 +1,22 @@
 {
-   "name": "bs-deriving",
-   "version": "42.1.0-pre.0",
-   "sources": [
-      {
-         "dir": "src/runtime"
-      }
-   ],
-   "bs-dependencies": ["@elliottcable/bs-result"],
-   "package-specs": {
-      "module": "commonjs",
-      "in-source": true
-   },
-   "suffix": ".bs.js",
-   "bsc-flags": ["-bs-super-errors", "-bs-no-version-header"],
-   "refmt": 3
+  "name": "bs-deriving",
+  "version": "42.1.0-pre.1",
+  "sources": [
+    {
+      "dir": "src/runtime"
+    }
+  ],
+  "bs-dependencies": [
+    "@elliottcable/bs-result"
+  ],
+  "package-specs": {
+    "module": "commonjs",
+    "in-source": true
+  },
+  "suffix": ".bs.js",
+  "bsc-flags": [
+    "-bs-super-errors",
+    "-bs-no-version-header"
+  ],
+  "refmt": 3
 }
