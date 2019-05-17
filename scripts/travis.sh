@@ -84,7 +84,6 @@ stage_test() {
       ppx-examples-test)
          eval `opam config env`
 
-         x npm run --silent build:ppx
          x npm run --silent build:examples
          x npm run --silent test
       ;;
