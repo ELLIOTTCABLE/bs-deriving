@@ -19,3 +19,4 @@ node_modules/
 bs-deriving-*.tgz
 ppx/
 dist/ppx-deriving-*.zip
+.deploy-status.env
