@@ -1,80 +1,81 @@
 {
-   "name": "bs-deriving",
-   "version": "42.1.0-pre.1",
-   "description": "Type-driven code generation for OCaml >=4.02 and BuckleScript",
-   "main": "index.js",
-   "directories": {
-      "example": "src_examples"
-   },
-   "devDependencies": {
-      "archiver": "^3.0.0",
-      "bs-platform": "^5.0.4",
-      "cpy": "^7.2.0",
-      "make-dir": "^3.0.0",
-      "node-jq": "^1.9.0"
-   },
-   "peerDependencies": {
-      "bs-platform": ">=4.x"
-   },
-   "scripts": {
-      "clean:examples": "npm run clean:ppx && cd src_examples && bsb -clean-world",
-      "build:examples": "npm run build:ppx && cd src_examples && bsb -make-world",
-      "clean:runtime": "bsb -clean-world",
-      "build:runtime": "bsb -make-world",
-      "clean:ppx": "dune clean",
-      "build:ppx": "npm run clean:ppx && dune build src_test/all/test_deriving_all.exe && node scripts/package.js",
-      "clean": "npm run clean:runtime && npm run clean:ppx",
-      "build": "npm run build:runtime && npm run build:ppx",
-      "prepare": "npm run clean && npm run build:runtime",
-      "preversion": "./scripts/preversion.sh",
-      "version": "./scripts/version.sh",
-      "test:ppx": "dune runtest",
-      "test:examples": "node src_examples/print_test.bs.js",
-      "test": "npm run test:ppx && npm run test:examples",
-      "travis": "./scripts/travis.sh"
-   },
-   "files": [
-      "bsconfig.json",
-      "bs_deriving.opam",
-      "src_examples/**/*.ml",
-      "src_examples/**/*.mli",
-      "src_examples/**/*.bs.js",
-      "src/**/*.ml",
-      "src/**/*.mli",
-      "src/**/*.bs.js",
-      "src_plugins/**/*.ml",
-      "src_plugins/**/*.mli",
-      "src_plugins/**/*.bs.js",
-      "src_test/**/*.ml",
-      "src_test/**/*.mli",
-      "src_test/**/*.bs.js",
-      "!**/dune",
-      "!**/.merlin"
-   ],
-   "repository": {
-      "type": "git",
-      "url": "git+https://github.com/ELLIOTTCABLE/bs-deriving.git"
-   },
-   "author": "whitequark <whitequark@whitequark.org>",
-   "license": "MIT",
-   "bugs": {
-      "url": "https://github.com/ELLIOTTCABLE/bs-deriving/issues"
-   },
-   "homepage": "https://github.com/ELLIOTTCABLE/bs-deriving#readme",
-   "dependencies": {
-      "@elliottcable/bs-result": "^12.0.0-pre.2"
-   },
-   "keywords": [
-      "BuckleScript",
-      "ReasonML",
-      "OCaml",
-      "PPX",
-      "AST",
-      "transpiler",
-      "tool",
-      "codegen",
-      "functional",
-      "types",
-      "static-typing"
-   ]
+  "name": "bs-deriving",
+  "version": "42.1.0-pre.1",
+  "description": "Type-driven code generation for OCaml >=4.02 and BuckleScript",
+  "main": "index.js",
+  "directories": {
+    "example": "src_examples"
+  },
+  "devDependencies": {
+    "archiver": "^3.0.0",
+    "bs-platform": "^5.0.4",
+    "cpy": "^7.2.0",
+    "make-dir": "^3.0.0",
+    "node-jq": "^1.9.0",
+    "ppx-deriving": "=42.1.0-pre.1"
+  },
+  "peerDependencies": {
+    "bs-platform": ">=4.x"
+  },
+  "scripts": {
+    "clean:examples": "npm run clean:ppx && cd src_examples && bsb -clean-world",
+    "build:examples": "npm run build:ppx && cd src_examples && bsb -make-world",
+    "clean:runtime": "bsb -clean-world",
+    "build:runtime": "bsb -make-world",
+    "clean:ppx": "dune clean",
+    "build:ppx": "npm run clean:ppx && dune build src_test/all/test_deriving_all.exe && node scripts/package.js",
+    "clean": "npm run clean:runtime && npm run clean:ppx",
+    "build": "npm run build:runtime && npm run build:ppx",
+    "prepare": "npm run clean && npm run build:runtime",
+    "preversion": "./scripts/preversion.sh",
+    "version": "./scripts/version.sh",
+    "test:ppx": "dune runtest",
+    "test:examples": "node src_examples/print_test.bs.js",
+    "test": "npm run test:ppx && npm run test:examples",
+    "travis": "./scripts/travis.sh"
+  },
+  "files": [
+    "bsconfig.json",
+    "bs_deriving.opam",
+    "src_examples/**/*.ml",
+    "src_examples/**/*.mli",
+    "src_examples/**/*.bs.js",
+    "src/**/*.ml",
+    "src/**/*.mli",
+    "src/**/*.bs.js",
+    "src_plugins/**/*.ml",
+    "src_plugins/**/*.mli",
+    "src_plugins/**/*.bs.js",
+    "src_test/**/*.ml",
+    "src_test/**/*.mli",
+    "src_test/**/*.bs.js",
+    "!**/dune",
+    "!**/.merlin"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ELLIOTTCABLE/bs-deriving.git"
+  },
+  "author": "whitequark <whitequark@whitequark.org>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ELLIOTTCABLE/bs-deriving/issues"
+  },
+  "homepage": "https://github.com/ELLIOTTCABLE/bs-deriving#readme",
+  "dependencies": {
+    "@elliottcable/bs-result": "^12.0.0-pre.2"
+  },
+  "keywords": [
+    "BuckleScript",
+    "ReasonML",
+    "OCaml",
+    "PPX",
+    "AST",
+    "transpiler",
+    "tool",
+    "codegen",
+    "functional",
+    "types",
+    "static-typing"
+  ]
 }
