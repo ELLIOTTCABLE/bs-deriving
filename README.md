@@ -1,3 +1,18 @@
+`bs-deriving`
+=============
+**Experimental**: Work in progress, don't rely on this yet!
+
+See [`bs-sedlex`'s README][bs-sedlex] for an overview of how to use a similar project (use `ppx-`/`bs-deriving`
+instead of `ppx-`/`bs-sedlex`.)
+
+See also the companion package, [`ppx-deriving`][ppx-deriving].
+
+   [bs-sedlex]: <https://github.com/ELLIOTTCABLE/bs-sedlex#bs-sedlex>
+   [ppx-deriving]: <https:/github.com/ELLIOTTCABLE/ppx-deriving>
+
+
+### Original README below
+
 [@@deriving]
 ============
 
