@@ -12,7 +12,7 @@
     "cpy": "^7.2.0",
     "make-dir": "^3.0.0",
     "node-jq": "^1.9.0",
-    "ppx-deriving": "=42.1.0-pre.1"
+    "ppx-deriving": "=42.1.0"
   },
   "peerDependencies": {
     "bs-platform": ">=4.x"
