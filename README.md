@@ -1,15 +1,133 @@
-`bs-deriving`
-=============
-**Experimental**: Work in progress, don't rely on this yet!
+<h1><img alt='Maintenance status: maintained' src="https://img.shields.io/maintenance/yes/2019.svg?style=popout-square&logo=verizon&logoColor=000000" align=right><a href="https://github.com/ELLIOTTCABLE/bs-deriving/releases" align=right><img alt='Latest npm release' src="https://img.shields.io/npm/v/bs-deriving.svg?style=popout-square&logo=npm&label=bs%20version" align=right></a><a target="_blank" href="https://travis-ci.com/ELLIOTTCABLE/bs-deriving" align=right><img alt='Build status on Travis-CI' src="https://img.shields.io/travis/com/ELLIOTTCABLE/bs-deriving.svg?style=popout-square&logo=travis&label=bs%20build" align=right></a><a target="_blank" href="https://twitter.com/intent/follow?screen_name=ELLIOTTCABLE" align=right><img alt='Follow my work on Twitter' src="https://img.shields.io/twitter/follow/ELLIOTTCABLE.svg?style=popout-square&logo=twitter&label=%40ELLIOTTCABLE&color=blue" align=right></a>
+<code>bs-deriving</code></h1>
 
-See [`bs-sedlex`'s README][bs-sedlex] for an overview of how to use a similar project (use `ppx-`/`bs-deriving`
-instead of `ppx-`/`bs-sedlex`.)
+> **For details on purpose, usage, and API of @@deriving, [scroll down](#deriving).** These
+> sections added at the top is specific to ways that installation and usage of the `bs-deriving`
+> distribution **differ** from using the upstream release.
 
-See also the companion package, [`ppx-deriving`][ppx-deriving].
+This repository contains a fork of the [ppx_deriving][] type-driven code-generation tooling for
+OCaml-family languages, packaged for use in projects utilizing [BuckleScript][] (an
+OCaml-to-JavaScript compiler) and/or [ReasonML][] (an alternative OCaml syntax targeting that
+compiler.)
 
-   [bs-sedlex]: <https://github.com/ELLIOTTCABLE/bs-sedlex#bs-sedlex>
-   [ppx-deriving]: <https:/github.com/ELLIOTTCABLE/ppx-deriving>
+Care is taken in this project to publish pre-compiled binaries of the ppx syntax-extension
+component. These are published to npm as the separate npm package, [`ppx-deriving`][ppx-deriving],
+versioned in lockstep with this parent `bs-deriving` package. Instructions for *enabling* this
+extension in your BuckleScript configuration-file, `bsconfig.json`, are included below. Don't miss
+them!
 
+   [ppx_deriving]: <https://github.com/ocaml-ppx/ppx_deriving>
+      "The upstream distribution of ppx_deriving, maintained by the OCaml community"
+   [BuckleScript]: <https://bucklescript.github.io/>
+   [ReasonML]: <https://reasonml.github.io/>
+   [ppx-deriving]: <https://www.npmjs.com/package/ppx-deriving>
+      "The native syntax-extension component of bs-deriving, published separately to npm"
+
+## Installation in BuckleScript projects
+
+You can safely ignore the ‘installation’ and ‘buildsystem integration’ instructions in the
+upstream-README reproduced below, when compiling to JS using BuckleScript and this package.
+Instead:
+
+1. If you're writing an app or a similar end-consumer project, install BuckleScript compiler (a
+   peerDependency of this project) via [npm][].
+
+   ```sh
+   $ npm install --save bs-platform
+   ```
+
+   Worh repeating: *do not add this dependency to a library!* The final application-developer
+   should generally select the version of the BuckleScript compiler; you don't want users having
+   duplicated versions of the compiler in their `node_modules`. Instead, library developers should
+   add `bs-platform` to both `"peerDependencies"` (with a permissive version), and
+   `"devDependencies"` (with a restrictive version):
+
+   ```sh
+   $ npm install --save-dev bs-platform
+   ```
+
+   ```diff
+    "devDependencies": {
+      ...
+      "bs-platform": "^5.0.0"
+    },
+    "peerDependencies": {
+   +  "bs-platform": "4.x || 5.x" // example. express the versions of BuckleScript you support here.
+    },
+   ```
+
+2. Add the ppx transformer to your `"devDependencies"`:
+
+   ```sh
+   $ npm install --save-dev ppx-deriving
+   ```
+
+3. Add the runtime package (this one!) to your direct `"dependencies"` (this time, for both
+   libraries and apps 🤣):
+
+   ```sh
+   $ npm install --save bs-deriving
+   ```
+
+4. Manually add it (the runtime package, `bs-deriving`) to your `bsconfig.json`'s `bs-dependencies`
+   field:
+
+   ```diff
+    "bs-dependencies": [
+      ...
+   +  "bs-deriving"
+    ],
+   ```
+
+5. Additionally tell BuckleScript to apply the `ppx-deriving` syntax-transformer over your
+   source-code by adding a `ppx-flags` field at the root level of the same `bsconfig.json`. (Note
+   that, unintuitively, this is *not* a relative path; it follows the format
+   `package-name/file-path`.)
+
+   ```diff
+    "bs-dependencies": [
+      ...
+      "bs-deriving"
+    ],
+   +"ppx-flags": [
+   +   "ppx-deriving/ppx.js"
+   +],
+   ```
+
+6. Let OCaml write your boilerplate, type-generic runtime *for* you!
+
+   [npm]: <https://www.npmjs.com/>
+      "npm, the package-manager for the JavaScript ecosystem"
+
+## Versioning of this package
+
+Thanks to [SemVer not including a ‘generation’ number][semver-213], there's really no way I can
+reasonably tie this project's version on npm to the upstream version of ppx_deriving as released to
+opam by the community maintainers. As ugly as it is, I've opted to pin the *major version* of
+`bs-deriving`, to the *flattened* major and minor versions of the upstream project.
+
+This means that the ported versions would look something like this:
+
+| ppx_deriving (opam) | `bs-deriving` (npm) |
+| -------- | --------- |
+| `v4.1.5` | `v41.5.x` |
+| `v4.2.0` | `v42.0.x` |
+
+Correspondingly, this project can't really strictly adhere to SemVer; I have no control over the major/minor components of `bs-deriving`'s published versions, and thus must compress breaking changes to the npm port into the patch-component. `/=`
+
+   [semver-213]: <https://github.com/semver/semver/issues/213#issuecomment-266914818>
+      "A discussion around extending SemVer with an additional, human-focused major component"
+
+## Shameless plug
+
+If you're doing any parsing work, I've also published the unsurpassable Sedlex to npm using the
+same techniques as used for this port of ppx_deriving. Check it out over at
+[`bs-sedlex`][bs-sedlex]; and see [my parsing tips for JavaScript / Reason
+developers][parsing-tips] over there as well. 😊
+
+   [bs-sedlex]: <https://github.com/ELLIOTTCABLE/bs-sedlex> "Sedlex for BuckleScript, on GitHub"
+   [parsing-tips]: <https://github.com/ELLIOTTCABLE/bs-sedlex#parser-writing-tips-from-a-fellow-javascripter>
+      "Parser-writing tips from a fellow JavaScripter"
 
 ### Original README below
 
