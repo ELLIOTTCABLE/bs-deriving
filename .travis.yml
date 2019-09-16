@@ -33,7 +33,7 @@ jobs:
            overwrite: true
            draft: true
       - os: linux
-        env: COMPONENT=ppx-examples-test GENERATION=next
+        env: COMPONENT=ppx-examples-test GENERATION=dev
         script: STAGE=deploy npm run travis
         deploy: *gh-release
       - os: osx
@@ -41,24 +41,24 @@ jobs:
         script: STAGE=deploy npm run travis
         deploy: *gh-release
       - os: osx
-        env: COMPONENT=ppx-examples-test GENERATION=next
+        env: COMPONENT=ppx-examples-test GENERATION=dev
         script: STAGE=deploy npm run travis
         deploy: *gh-release
 
 env:
    - COMPONENT=ppx-examples-test
    - COMPONENT=ppx-examples-test GENERATION=latest
-   - COMPONENT=ppx-examples-test GENERATION=next
+   - COMPONENT=ppx-examples-test GENERATION=dev
    - COMPONENT=runtime
    - COMPONENT=runtime GENERATION=latest
-   - COMPONENT=runtime GENERATION=next
+   - COMPONENT=runtime GENERATION=dev
 
 # Allow failures on the upcoming major version of BuckleScript
 #matrix:
 #   fast_finish: true
 #   allow_failures:
-#      - env: COMPONENT=ppx-examples-test GENERATION=next
-#      - env: COMPONENT=runtime GENERATION=next
+#      - env: COMPONENT=ppx-examples-test GENERATION=dev
+#      - env: COMPONENT=runtime GENERATION=dev
 
 os:
    - linux
