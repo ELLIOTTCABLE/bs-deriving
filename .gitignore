@@ -8,6 +8,8 @@ src_test/_tags
 .merlin
 _opam
 
+src/runtime/ppx_deriving_runtime.ml*
+
 # BuckleScript
 node_modules/
 **/lib/

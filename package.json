@@ -18,14 +18,11 @@
     "bs-platform": ">=4.x"
   },
   "scripts": {
-    "clean:examples": "npm run clean:ppx && cd src_examples && bsb -clean-world",
     "build:examples": "npm run build:ppx && cd src_examples && bsb -make-world",
-    "clean:runtime": "bsb -clean-world",
-    "build:runtime": "bsb -make-world",
-    "clean:ppx": "dune clean",
-    "build:ppx": "npm run clean:ppx && dune build src_test/all/test_deriving_all.exe && node scripts/package.js",
-    "clean": "npm run clean:runtime && npm run clean:ppx",
+    "build:runtime": "dune build 'src/runtime/ppx_deriving_runtime.ml' 'src/runtime/ppx_deriving_runtime.mli' && bsb -make-world",
+    "build:ppx": "dune build 'src_test/all/test_deriving_all.exe' && node scripts/package.js",
     "build": "npm run build:runtime && npm run build:ppx",
+    "clean": "dune clean && bsb -clean-world && cd src_examples && bsb -clean-world",
     "prepare": "npm run clean && npm run build:runtime",
     "preversion": "./scripts/preversion.sh",
     "version": "./scripts/version.sh",
