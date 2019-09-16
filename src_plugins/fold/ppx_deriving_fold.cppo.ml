@@ -1,6 +1,4 @@
-#if OCAML_VERSION < (4, 03, 0)
-#define Pcstr_tuple(core_types) core_types
-#endif
+#include "../compat_macros.cppo"
 
 open Longident
 open Location
@@ -71,12 +69,12 @@ let rec expr_of_typ typ =
 #endif
         in
         match field with
-        | Rtag (label, _, true (*empty*), []) ->
+        | Rtag_patt(label, true (*empty*), []) ->
           Exp.case (variant label None) [%expr acc]
-        | Rtag (label, _, false, [typ]) ->
+        | Rtag_patt(label, false, [typ]) ->
           Exp.case (variant label (Some [%pat? x]))
                    [%expr [%e expr_of_typ typ] acc x]
-        | Rinherit ({ ptyp_desc = Ptyp_constr (tname, _) } as typ) ->
+        | Rinherit_patt({ ptyp_desc = Ptyp_constr (tname, _) } as typ) ->
           Exp.case [%pat? [%p Pat.type_ tname] as x]
                    [%expr [%e expr_of_typ typ] acc x]
         | _ ->
@@ -90,6 +88,10 @@ let rec expr_of_typ typ =
   | { ptyp_loc } ->
     raise_errorf ~loc:ptyp_loc "%s cannot be derived for %s"
                  deriver (Ppx_deriving.string_of_core_type typ)
+
+and expr_of_label_decl { pld_type; pld_attributes } =
+  let attrs = pld_type.ptyp_attributes @ pld_attributes in
+  expr_of_typ { pld_type with ptyp_attributes = attrs }
 
 let str_of_type ~options ~path ({ ptype_loc = loc } as type_decl) =
   parse_options options;
@@ -106,8 +108,9 @@ let str_of_type ~options ~path ({ ptype_loc = loc } as type_decl) =
                    Ppx_deriving.(fold_exprs ~unit:[%expr acc] reduce_acc args)
 #if OCAML_VERSION >= (4, 03, 0)
         | Pcstr_record(labels) ->
-          let args = labels |> List.map (fun { pld_name = { txt = n }; pld_type = typ } ->
-                        [%expr [%e expr_of_typ typ] acc [%e evar (argl n)]]) in
+          let args = labels |> List.map (fun ({ pld_name = { txt = n }; _ } as pld) ->
+                        [%expr [%e expr_of_label_decl pld]
+                            acc [%e evar (argl n)]]) in
           Exp.case (pconstrrec name' (pattl labels))
                    Ppx_deriving.(fold_exprs ~unit:[%expr acc] reduce_acc args)
 #endif
@@ -116,8 +119,8 @@ let str_of_type ~options ~path ({ ptype_loc = loc } as type_decl) =
       [%expr fun acc -> [%e Exp.function_ cases]]
     | Ptype_record labels, _ ->
       let fields =
-        labels |> List.mapi (fun i { pld_name = { txt = name }; pld_type } ->
-          [%expr [%e expr_of_typ pld_type] acc
+        labels |> List.mapi (fun i ({ pld_name = { txt = name }; _ } as pld) ->
+          [%expr [%e expr_of_label_decl pld] acc
                  [%e Exp.field (evar "x") (mknoloc (Lident name))]])
       in
       [%expr fun acc x -> [%e Ppx_deriving.(fold_exprs ~unit:[%expr acc] reduce_acc fields)]]

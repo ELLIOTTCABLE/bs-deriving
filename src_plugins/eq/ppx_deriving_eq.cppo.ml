@@ -1,6 +1,4 @@
-#if OCAML_VERSION < (4, 03, 0)
-#define Pcstr_tuple(core_types) core_types
-#endif
+#include "../compat_macros.cppo"
 
 open Longident
 open Location
@@ -56,8 +54,14 @@ let rec exprn quoter typs =
     app (expr_of_typ quoter typ) [evar (argn `lhs i); evar (argn `rhs i)])
 
 and exprl quoter typs =
-  typs |> List.map (fun { pld_name = { txt = n }; pld_type = typ } ->
-    app (expr_of_typ quoter typ) [evar (argl `lhs n); evar (argl `rhs n)])
+  typs |> List.map (fun ({ pld_name = { txt = n }; pld_loc; _ } as pld) ->
+    with_default_loc pld_loc @@ fun () ->
+    app (expr_of_label_decl quoter pld)
+      [evar (argl `lhs n); evar (argl `rhs n)])
+
+and expr_of_label_decl quoter { pld_type; pld_attributes } =
+  let attrs = pld_type.ptyp_attributes @ pld_attributes in
+  expr_of_typ quoter { pld_type with ptyp_attributes = attrs }
 
 and expr_of_typ quoter typ =
   let typ = Ppx_deriving.remove_pervasives ~deriver typ in
@@ -129,12 +133,12 @@ and expr_of_typ quoter typ =
 #endif
           in
           match field with
-          | Rtag (label, _, true (*empty*), []) ->
+          | Rtag_patt(label, true (*empty*), []) ->
             Exp.case (pdup (fun _ -> variant label None)) [%expr true]
-          | Rtag (label, _, false, [typ]) ->
+          | Rtag_patt(label, false, [typ]) ->
             Exp.case (pdup (fun var -> variant label (Some (pvar var))))
                      (app (expr_of_typ typ) [evar "lhs"; evar "rhs"])
-          | Rinherit ({ ptyp_desc = Ptyp_constr (tname, _) } as typ) ->
+          | Rinherit_patt({ ptyp_desc = Ptyp_constr (tname, _) } as typ) ->
             Exp.case (pdup (fun var -> Pat.alias (Pat.type_ tname) (mknoloc var)))
                      (app (expr_of_typ typ) [evar "lhs"; evar "rhs"])
           | _ ->
@@ -178,13 +182,12 @@ let str_of_type ~options ~path ({ ptype_loc = loc } as type_decl) =
       [%expr fun lhs rhs -> [%e Exp.match_ [%expr lhs, rhs] cases]]
     | Ptype_record labels, _ ->
       let exprs =
-        labels |> List.map (fun { pld_name = { txt = name }; pld_type; pld_attributes; pld_loc } ->
+        labels |> List.map (fun ({ pld_loc; pld_name = { txt = name }; _ } as pld) ->
           with_default_loc pld_loc @@ fun () ->
           (* combine attributes of type and label *)
-          let attrs =  pld_type.ptyp_attributes @ pld_attributes in
-          let pld_type = {pld_type with ptyp_attributes=attrs} in
           let field obj = Exp.field obj (mknoloc (Lident name)) in
-          app (expr_of_typ quoter pld_type) [field (evar "lhs"); field (evar "rhs")])
+          app (expr_of_label_decl quoter pld)
+            [field (evar "lhs"); field (evar "rhs")])
       in
       [%expr fun lhs rhs -> [%e exprs |> Ppx_deriving.(fold_exprs (binop_reduce [%expr (&&)]))]]
     | Ptype_abstract, None ->

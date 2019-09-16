@@ -1,6 +1,4 @@
-#if OCAML_VERSION < (4, 03, 0)
-#define Pcstr_tuple(core_types) core_types
-#endif
+#include "../compat_macros.cppo"
 
 open Longident
 open Location
@@ -175,13 +173,13 @@ let rec expr_of_typ quoter typ =
       let cases =
         fields |> List.map (fun field ->
           match field with
-          | Rtag (label, _, true (*empty*), []) ->
+          | Rtag_patt(label, true (*empty*), []) ->
 #if OCAML_VERSION >= (4, 06, 0)
             let label = label.txt in
 #endif
             Exp.case (Pat.variant label None)
                      [%expr Ppx_deriving_runtime.Format.pp_print_string fmt [%e str ("`" ^ label)]]
-          | Rtag (label, _, false, [typ]) ->
+          | Rtag_patt(label, false, [typ]) ->
 #if OCAML_VERSION >= (4, 06, 0)
             let label = label.txt in
 #endif
@@ -189,7 +187,7 @@ let rec expr_of_typ quoter typ =
                      [%expr Ppx_deriving_runtime.Format.fprintf fmt [%e str ("`" ^ label ^ " (@[<hov>")];
                             [%e expr_of_typ typ] x;
                             Ppx_deriving_runtime.Format.fprintf fmt "@])"]
-          | Rinherit ({ ptyp_desc = Ptyp_constr (tname, _) } as typ) ->
+          | Rinherit_patt({ ptyp_desc = Ptyp_constr (tname, _) } as typ) ->
             Exp.case [%pat? [%p Pat.type_ tname] as x]
                      [%expr [%e expr_of_typ typ] x]
           | _ ->
@@ -202,6 +200,10 @@ let rec expr_of_typ quoter typ =
     | { ptyp_loc } ->
       raise_errorf ~loc:ptyp_loc "%s cannot be derived for %s"
                    deriver (Ppx_deriving.string_of_core_type typ)
+
+and expr_of_label_decl quoter { pld_type; pld_attributes } =
+  let attrs = pld_type.ptyp_attributes @ pld_attributes in
+  expr_of_typ quoter { pld_type with ptyp_attributes = attrs }
 
 let str_of_type ~options ~path ({ ptype_loc = loc } as type_decl) =
   let show_opts = parse_options options in
@@ -263,10 +265,11 @@ let str_of_type ~options ~path ({ ptype_loc = loc } as type_decl) =
 #if OCAML_VERSION >= (4, 03, 0)
           | None, Pcstr_record(labels) ->
             let args =
-              labels |> List.map (fun { pld_name = { txt = n }; pld_type = typ } ->
+              labels |> List.map (fun ({ pld_name = { txt = n }; _ } as pld) ->
                 [%expr
                   Ppx_deriving_runtime.Format.fprintf fmt "@[%s =@ " [%e str n];
-                  [%e expr_of_typ quoter typ] [%e evar (argl n)];
+                  [%e expr_of_label_decl quoter pld]
+                    [%e evar (argl n)];
                   Ppx_deriving_runtime.Format.fprintf fmt "@]"
                 ])
             in
@@ -284,12 +287,12 @@ let str_of_type ~options ~path ({ ptype_loc = loc } as type_decl) =
       [%expr fun fmt -> [%e Exp.function_ cases]]
     | Ptype_record labels, _ ->
       let fields =
-        labels |> List.mapi (fun i { pld_name = { txt = name }; pld_type; pld_attributes } ->
+        labels |> List.mapi (fun i ({ pld_name = { txt = name }; _} as pld) ->
           let field_name = if i = 0 then expand_path show_opts ~path name else name in
-          let pld_type = {pld_type with ptyp_attributes=pld_attributes@pld_type.ptyp_attributes} in
           [%expr
             Ppx_deriving_runtime.Format.fprintf fmt "@[%s =@ " [%e str field_name];
-            [%e expr_of_typ quoter pld_type] [%e Exp.field (evar "x") (mknoloc (Lident name))];
+            [%e expr_of_label_decl quoter pld]
+              [%e Exp.field (evar "x") (mknoloc (Lident name))];
             Ppx_deriving_runtime.Format.fprintf fmt "@]"
           ])
       in

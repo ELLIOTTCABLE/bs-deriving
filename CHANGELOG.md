@@ -1,8 +1,22 @@
 Changelog
 =========
 
-NEXT_RELEASE
-------------
+4.4
+---
+
+* Restore support for OCaml 4.02.3
+  #188
+  (ELLIOTTCABLE)
+* workaround Location.input_filename being empty
+  when using reason-language-server
+  #196
+  (Ryan Artecona)
+* Add support for OCaml 4.08.0
+  #193, #197, #200
+  (Gabriel Scherer)
+
+4.3
+---
 
 * use Format through Ppx_deriving_runtime to avoid deprecation warning
   for users of JaneStreet Base
