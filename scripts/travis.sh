@@ -71,19 +71,19 @@ stage_install() {
    # ‘Install’ our own local version of the ppx-binary package
    x npm link ./ppx-*
 
-   # Finally, for everything except the `runtime`, we need a working OCaml installation of
-   # the same version as the BuckleScript we just built.
-   if [ "$COMPONENT" != "runtime" ]; then install_matching_ocaml; fi
+   # Finally, we need a working OCaml installation of the same version as the BuckleScript we just
+   # built.
+   install_matching_ocaml
 }
 
 stage_test() {
+   eval `opam config env`
+
    case "$COMPONENT" in
       runtime)
          x npm run --silent build:runtime
       ;;
       ppx-examples-test)
-         eval `opam config env`
-
          x npm run --silent build:examples
          x npm run --silent test
       ;;
