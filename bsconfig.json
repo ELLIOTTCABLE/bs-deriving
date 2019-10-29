@@ -1,6 +1,6 @@
 {
   "name": "bs-deriving",
-  "version": "44.0.0",
+  "version": "44.1.0",
   "sources": [
     {
       "dir": "src/runtime"
