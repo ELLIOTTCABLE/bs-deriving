@@ -215,6 +215,11 @@ step_8() {
    STEP=8 && dump_status
 
    puts ''
+   puts "When the Travis build is done, if successful, it'll upload the artifacts to a GitHub 'draft.'"
+   puts "You'll need to visit the Releases page and hit 'Publish release' on that draft, before continuing:"
+   puts '   https://github.com/ELLIOTTCABLE/bs-deriving/releases'
+   puts ''
+
    printf %s 'Start checking for those build artifacts on GitHub? [Y/n] '; read yn
    if [ "$yn" != "${yn#[Yy]}" ]; then
       until (
