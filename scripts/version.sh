@@ -342,7 +342,7 @@ step_14() {
    fi
 
    # there is no step 15! ... lol.
-   rm .deploy-status.env
+   rm .deploy-status.env || exit 0
 }
 
 
