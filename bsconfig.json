@@ -3,7 +3,7 @@
   "version": "44.1.0",
   "sources": [
     {
-      "dir": "src/runtime"
+      "dir": "src/runtime/gen"
     }
   ],
   "bs-dependencies": [
