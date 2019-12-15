@@ -2,7 +2,7 @@
    "name": "bs-deriving-examples",
    "sources": [
       {
-         "dir": "../src/runtime"
+         "dir": "../src/runtime/gen"
       },
       {
          "dir": "./",
