@@ -1,6 +1,6 @@
 {
   "name": "bs-deriving",
-  "version": "44.1.0",
+  "version": "44.1.1",
   "description": "Type-driven code generation for OCaml, ReasonML, and BuckleScript",
   "main": "src/runtime/gen/ppx_deriving_runtime.bs.js",
   "directories": {
