@@ -93,8 +93,7 @@ module Stack : (module type of Stack with
   type 'a t = 'a Stack.t)
 module Set : (module type of Set)
 module Map : (module type of Map)
-module Weak : (module type of Weak with
-  type 'a t = 'a Weak.t)
+module Weak : (module type of Array)
 module Buffer : (module type of Buffer with
   type t = Buffer.t)
 module Result : sig
