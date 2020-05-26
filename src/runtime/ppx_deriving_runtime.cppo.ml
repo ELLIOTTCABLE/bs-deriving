@@ -53,7 +53,6 @@ module Queue = Queue
 module Stack = Stack
 module Set = Set
 module Map = Map
-module Weak = Array
 
 module Printf = Printf
 module Format = Format
