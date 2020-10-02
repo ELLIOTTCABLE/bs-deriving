@@ -22,7 +22,7 @@ fi
 install_matching_ocaml() {
    x wget https://raw.githubusercontent.com/ocaml/ocaml-ci-scripts/master/.travis-ocaml.sh
 
-   BSC_VERSION="$(bsc -vnum)"
+   BSC_VERSION="$(bsc -v)"
 
    case "$BSC_VERSION" in
       *OCaml*4.02.3*) export OCAML_VERSION=4.02 OPAM_SWITCH=ocaml-base-compiler.4.02.3;;
