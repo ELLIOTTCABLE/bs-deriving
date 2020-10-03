@@ -3,69 +3,69 @@ open OUnit2
 module T : sig
 
   type 'a btree = Node of 'a btree * 'a * 'a btree | Leaf
-  [@@deriving map, show]
+  [@@ppx_deriving map, show]
 
 #if OCAML_VERSION >= (4, 03, 0)
   type 'a btreer = Noder of { lft: 'a btree; elt: 'a; rgt: 'a btree } | Leafr
-  [@@deriving map]
+  [@@ppx_deriving map]
 #endif
 
-  type var0 = A0 of int [@@deriving map,show]
+  type var0 = A0 of int [@@ppx_deriving map,show]
 
-  type 'a var1 = A1 of 'a [@@deriving map,show]
+  type 'a var1 = A1 of 'a [@@ppx_deriving map,show]
 
-  type 'a var2 = A2 of 'a | B2 of int [@@deriving map,show]
+  type 'a var2 = A2 of 'a | B2 of int [@@ppx_deriving map,show]
 
-  type ('a,'b) var3 = A3 of 'a | B3 of bool | C3 of 'b * ('a,'b) var3 [@@deriving map,show]
+  type ('a,'b) var3 = A3 of 'a | B3 of bool | C3 of 'b * ('a,'b) var3 [@@ppx_deriving map,show]
 
-  type record0 = { a0 : int } [@@deriving map,show]
+  type record0 = { a0 : int } [@@ppx_deriving map,show]
 
-  type 'a record1 = { a1 : 'a } [@@deriving map,show]
+  type 'a record1 = { a1 : 'a } [@@ppx_deriving map,show]
 
-  type 'a record2 = { a2 : 'a; b2 : int } [@@deriving map,show]
+  type 'a record2 = { a2 : 'a; b2 : int } [@@ppx_deriving map,show]
 
-  type ('a,'b) record3 = { a3 : 'a; b3 : bool; c3 : 'b } [@@deriving map,show]
+  type ('a,'b) record3 = { a3 : 'a; b3 : bool; c3 : 'b } [@@ppx_deriving map,show]
 
-  type ('a,'b) pvar0 = [ `A of 'a | `B of ('a,'b) pvar0 | `C of 'b ] [@@deriving map,show]
-  type ('a,'b,'c) pvar1 = [ ('a,'b) pvar0 | `D of 'c | `E of ('b,'c) pvar0 ] [@@deriving map,show]
-  type pvar2 = [ `F | `G ] [@@deriving map,show]
-  type ('a,'b,'c) pvar3 = [ pvar2 | ('a,'b,'c) pvar1 ] [@@deriving map,show]
+  type ('a,'b) pvar0 = [ `A of 'a | `B of ('a,'b) pvar0 | `C of 'b ] [@@ppx_deriving map,show]
+  type ('a,'b,'c) pvar1 = [ ('a,'b) pvar0 | `D of 'c | `E of ('b,'c) pvar0 ] [@@ppx_deriving map,show]
+  type pvar2 = [ `F | `G ] [@@ppx_deriving map,show]
+  type ('a,'b,'c) pvar3 = [ pvar2 | ('a,'b,'c) pvar1 ] [@@ppx_deriving map,show]
 
 end = struct
 
   type 'a btree = Node of 'a btree * 'a * 'a btree | Leaf
-  [@@deriving map, show]
+  [@@ppx_deriving map, show]
 
 #if OCAML_VERSION >= (4, 03, 0)
   type 'a btreer = Noder of { lft: 'a btree; elt: 'a; rgt: 'a btree } | Leafr
-  [@@deriving map]
+  [@@ppx_deriving map]
 #endif
 
   type 'a ty = 'a * int list
-  [@@deriving map]
+  [@@ppx_deriving map]
 
   (* variants and records with mixtures of poly/nonpoly fields *)
 
-  type var0 = A0 of int [@@deriving map,show]
+  type var0 = A0 of int [@@ppx_deriving map,show]
 
-  type 'a var1 = A1 of 'a [@@deriving map,show]
+  type 'a var1 = A1 of 'a [@@ppx_deriving map,show]
 
-  type 'a var2 = A2 of 'a | B2 of int [@@deriving map,show]
+  type 'a var2 = A2 of 'a | B2 of int [@@ppx_deriving map,show]
 
-  type ('a,'b) var3 = A3 of 'a | B3 of bool | C3 of 'b * ('a,'b) var3 [@@deriving map,show]
+  type ('a,'b) var3 = A3 of 'a | B3 of bool | C3 of 'b * ('a,'b) var3 [@@ppx_deriving map,show]
 
-  type record0 = { a0 : int } [@@deriving map,show]
+  type record0 = { a0 : int } [@@ppx_deriving map,show]
 
-  type 'a record1 = { a1 : 'a } [@@deriving map,show]
+  type 'a record1 = { a1 : 'a } [@@ppx_deriving map,show]
 
-  type 'a record2 = { a2 : 'a; b2 : int } [@@deriving map,show]
+  type 'a record2 = { a2 : 'a; b2 : int } [@@ppx_deriving map,show]
 
-  type ('a,'b) record3 = { a3 : 'a; b3 : bool; c3 : 'b } [@@deriving map,show]
+  type ('a,'b) record3 = { a3 : 'a; b3 : bool; c3 : 'b } [@@ppx_deriving map,show]
 
-  type ('a,'b) pvar0 = [ `A of 'a | `B of ('a,'b) pvar0 | `C of 'b ] [@@deriving map,show]
-  type ('a,'b,'c) pvar1 = [ ('a,'b) pvar0 | `D of 'c | `E of ('b,'c) pvar0 ] [@@deriving map,show]
-  type pvar2 = [ `F | `G ] [@@deriving map,show]
-  type ('a,'b,'c) pvar3 = [ pvar2 | ('a,'b,'c) pvar1 ] [@@deriving map,show]
+  type ('a,'b) pvar0 = [ `A of 'a | `B of ('a,'b) pvar0 | `C of 'b ] [@@ppx_deriving map,show]
+  type ('a,'b,'c) pvar1 = [ ('a,'b) pvar0 | `D of 'c | `E of ('b,'c) pvar0 ] [@@ppx_deriving map,show]
+  type pvar2 = [ `F | `G ] [@@ppx_deriving map,show]
+  type ('a,'b,'c) pvar3 = [ pvar2 | ('a,'b,'c) pvar1 ] [@@ppx_deriving map,show]
 
 end
 
@@ -144,7 +144,7 @@ let test_pvar3 ctxt =
   assert_equal ~printer:show `G (map `G)
 
 #if OCAML_VERSION >= (4, 03, 0)
-type 'a result0 = ('a, bool) result [@@deriving show,map]
+type 'a result0 = ('a, bool) result [@@ppx_deriving show,map]
 
 let test_map_result ctxt =
   let f = map_result0 succ in
@@ -153,7 +153,7 @@ let test_map_result ctxt =
   assert_equal ~printer (Error true) (f (Error true))
 #endif
 
-type 'a result_result0 = ('a, bool) Result.result [@@deriving show,map]
+type 'a result_result0 = ('a, bool) Result.result [@@ppx_deriving show,map]
 
 let test_map_result_result ctxt =
   let open Result in
