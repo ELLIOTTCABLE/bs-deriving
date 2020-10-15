@@ -39,7 +39,7 @@ let load_plugin ?loc plugin =
     dynlink ?loc plugin
 
 let get_plugins () =
-  match Ast_mapper.get_cookie "ppx_deriving" with
+  match Ast_mapper.get_cookie "ppx.deriving" with
   | Some { pexp_desc = Pexp_tuple exprs } ->
     exprs |> List.map (fun expr ->
       match expr with
@@ -53,7 +53,7 @@ let add_plugins plugins =
   let plugins = List.filter (fun file -> not (List.mem file loaded)) plugins in
   List.iter load_plugin plugins;
   let loaded  = loaded @ plugins in
-  Ast_mapper.set_cookie "ppx_deriving"
+  Ast_mapper.set_cookie "ppx.deriving"
     (Exp.tuple (List.map (fun file -> Exp.constant (Pconst_string (file, None))) loaded))
 
 let mapper argv =
@@ -62,7 +62,7 @@ let mapper argv =
   let omp_mapper = Migrate_parsetree.Driver.run_as_ast_mapper [] in
   let structure mapper = function
     | [%stri [@@@findlib.ppxopt [%e? { pexp_desc = Pexp_tuple (
-          [%expr "ppx_deriving"] :: elems) }]]] :: rest ->
+          [%expr "ppx.deriving"] :: elems) }]]] :: rest ->
       elems |>
         List.map (fun elem ->
           match elem with
@@ -74,5 +74,5 @@ let mapper argv =
   { omp_mapper with Ast_mapper.structure }
 
 let () =
-  Ast_mapper.register "ppx_deriving" mapper
+  Ast_mapper.register "ppx.deriving" mapper
 
