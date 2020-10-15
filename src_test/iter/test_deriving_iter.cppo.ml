@@ -3,27 +3,27 @@ open OUnit2
 module T : sig
 
   type 'a btree = Node of 'a btree * 'a * 'a btree | Leaf
-  [@@ppx_deriving iter]
+  [@@ppx.deriving iter]
 
   (* test for #82: iter_record : ('a -> unit) -> ('b -> unit) -> ('a,'b) record -> unit) *)
   type ('a,'b) record = { a : 'a; b : 'b }
-  [@@ppx_deriving iter]
+  [@@ppx.deriving iter]
 
   type 'a reflist = 'a Pervasives.ref list
   [@@ocaml.warning "-3"]
-  [@@ppx_deriving iter]
+  [@@ppx.deriving iter]
 
 end = struct
 
   type 'a btree = Node of 'a btree * 'a * 'a btree | Leaf
-  [@@ppx_deriving iter]
+  [@@ppx.deriving iter]
 
   type ('a,'b) record = { a : 'a; b : 'b }
-  [@@ppx_deriving iter]
+  [@@ppx.deriving iter]
 
   type 'a reflist = 'a Pervasives.ref list
   [@@ocaml.warning "-3"]
-  [@@ppx_deriving iter]
+  [@@ppx.deriving iter]
 
 end
 
@@ -54,13 +54,13 @@ let test_reflist ctxt =
 
 #if OCAML_VERSION >= (4, 03, 0)
 type 'a btreer = Node of { lft: 'a btree; elt: 'a; rgt: 'a btree } | Leaf
-[@@ppx_deriving iter]
+[@@ppx.deriving iter]
 #endif
 
 type 'a ty = 'a * int list
-[@@ppx_deriving iter]
+[@@ppx.deriving iter]
 
-type 'a res0 = ('a, char) Result.result [@@ppx_deriving iter]
+type 'a res0 = ('a, char) Result.result [@@ppx.deriving iter]
 
 let test_iter_res ctxt =
   let has_ok = ref false in
