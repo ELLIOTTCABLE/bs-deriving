@@ -4,21 +4,21 @@ open OUnit2
 
 let printer = string_of_bool
 
-type a1 = int        [@@deriving eq]
-type a2 = int32      [@@deriving eq]
-type a3 = int64      [@@deriving eq]
-type a4 = nativeint  [@@deriving eq]
-type a5 = float      [@@deriving eq]
-type a6 = bool       [@@deriving eq]
-type a7 = char       [@@deriving eq]
-type a8 = string     [@@deriving eq]
-type a9 = bytes      [@@deriving eq]
-type r1 = int ref    [@@deriving eq]
-type r2 = int Pervasives.ref [@@ocaml.warning "-3"][@@deriving eq]
-type l  = int list   [@@deriving eq]
-type a  = int array  [@@deriving eq]
-type o  = int option [@@deriving eq]
-type y  = int lazy_t [@@deriving eq]
+type a1 = int        [@@ppx.deriving eq]
+type a2 = int32      [@@ppx.deriving eq]
+type a3 = int64      [@@ppx.deriving eq]
+type a4 = nativeint  [@@ppx.deriving eq]
+type a5 = float      [@@ppx.deriving eq]
+type a6 = bool       [@@ppx.deriving eq]
+type a7 = char       [@@ppx.deriving eq]
+type a8 = string     [@@ppx.deriving eq]
+type a9 = bytes      [@@ppx.deriving eq]
+type r1 = int ref    [@@ppx.deriving eq]
+type r2 = int Pervasives.ref [@@ocaml.warning "-3"][@@ppx.deriving eq]
+type l  = int list   [@@ppx.deriving eq]
+type a  = int array  [@@ppx.deriving eq]
+type o  = int option [@@ppx.deriving eq]
+type y  = int lazy_t [@@ppx.deriving eq]
 
 let test_simple ctxt =
   assert_equal ~printer true  (equal_a1 1 1);
@@ -36,41 +36,41 @@ let test_ref1 ctxt =
 let test_ref2 ctxt =
   assert_equal ~printer true (equal_r2 (ref 0) (ref 0))
 
-type v = Foo | Bar of int * string | Baz of string [@@deriving eq]
+type v = Foo | Bar of int * string | Baz of string [@@ppx.deriving eq]
 
 #if OCAML_VERSION >= (4, 03, 0)
-type rv = RFoo | RBar of { x: int; y: string; } [@@deriving eq]
+type rv = RFoo | RBar of { x: int; y: string; } [@@ppx.deriving eq]
 #endif
 
-type pv1 = [ `Foo | `Bar of int * string ] [@@deriving eq]
-type pv2 = [ `Baz | pv1 ] [@@deriving eq]
+type pv1 = [ `Foo | `Bar of int * string ] [@@ppx.deriving eq]
+type pv2 = [ `Baz | pv1 ] [@@ppx.deriving eq]
 
-type ty = int * string [@@deriving eq]
+type ty = int * string [@@ppx.deriving eq]
 
 type re = {
   f1 : int;
   f2 : string;
-} [@@deriving eq]
+} [@@ppx.deriving eq]
 
 module M : sig
-  type t = int [@@deriving eq]
+  type t = int [@@ppx.deriving eq]
 end = struct
-  type t = int [@@deriving eq]
+  type t = int [@@ppx.deriving eq]
 end
 
-type z = M.t [@@deriving eq]
+type z = M.t [@@ppx.deriving eq]
 
 type file = {
   name : string;
   perm : int     [@equal (<>)];
-} [@@deriving eq]
+} [@@ppx.deriving eq]
 let test_custom ctxt =
   assert_equal ~printer false (equal_file { name = ""; perm = 1 }
                                           { name = ""; perm = 1 });
   assert_equal ~printer true  (equal_file { name = ""; perm = 1 }
                                           { name = ""; perm = 2 })
 
-type 'a pt = { v : 'a } [@@deriving eq]
+type 'a pt = { v : 'a } [@@ppx.deriving eq]
 
 let test_placeholder ctxt =
   assert_equal ~printer true ([%eq: _] 1 2)
@@ -80,7 +80,7 @@ type mrec_variant =
   | MrecFoo of string
   | MrecBar of int
 
-and mrec_variant_list = mrec_variant list [@@deriving eq]
+and mrec_variant_list = mrec_variant list [@@ppx.deriving eq]
 
 let test_mrec ctxt =
   assert_equal ~printer true  (equal_mrec_variant_list [MrecFoo "foo"; MrecBar 1]
@@ -91,7 +91,7 @@ let test_mrec ctxt =
 type e = Bool of be | Plus of e * e | IfE  of (be, e) if_e | Unit
 and be = True | False | And of be * be | IfB of (be, be) if_e
 and ('cond, 'a) if_e = 'cond * 'a * 'a
-  [@@deriving eq]
+  [@@ppx.deriving eq]
 
 let test_mut_rec ctxt =
   let e1 = IfE (And (False, True), Unit, Plus (Unit, Unit)) in
@@ -108,7 +108,7 @@ and bool =
   | Bfoo of int * ((int -> int) [@equal fun _ _ -> true])
 and string =
   | Sfoo of (String.t [@equal (=)]) * ((int -> int) [@equal fun _ _ -> true])
-[@@deriving eq]
+[@@ppx.deriving eq]
 
 let test_std_shadowing ctxt =
   let e1 = ESBool (Bfoo (1, (+) 1)) in
@@ -120,7 +120,7 @@ let test_std_shadowing ctxt =
 
 type poly_app = float poly_abs
 and 'a poly_abs = 'a
-[@@deriving eq]
+[@@ppx.deriving eq]
 
 let test_poly_app ctxt =
   assert_equal ~printer true (equal_poly_app 1.0 1.0);
@@ -128,10 +128,10 @@ let test_poly_app ctxt =
 
 module List = struct
   type 'a t = [`Cons of 'a | `Nil]
-  [@@deriving eq]
+  [@@ppx.deriving eq]
 end
 type 'a std_clash = 'a List.t option
-[@@deriving eq]
+[@@ppx.deriving eq]
 
 #if OCAML_VERSION >= (4, 03, 0)
 let test_result ctxt =

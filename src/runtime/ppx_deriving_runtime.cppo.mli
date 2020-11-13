@@ -13,7 +13,6 @@ type nonrec exn = exn
 type nonrec 'a array = 'a array
 type nonrec 'a list = 'a list
 type nonrec 'a option = 'a option
-type nonrec nativeint = nativeint
 type nonrec int32 = int32
 type nonrec int64 = int64
 type nonrec 'a lazy_t = 'a lazy_t
@@ -76,7 +75,6 @@ module Printexc : (module type of Printexc with
   type location = Printexc.location)
 module Array : (module type of Array)
 module List : (module type of List)
-module Nativeint : (module type of Nativeint)
 module Int32 : (module type of Int32)
 module Int64 : (module type of Int64)
 module Lazy : (module type of Lazy)

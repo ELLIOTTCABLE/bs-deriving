@@ -2,7 +2,7 @@
 type t =
   | Leaf of int
   | Node of t list
-  [@@deriving show]
+  [@@ppx.deriving show]
 
 let test_case =
   (Node

@@ -2,23 +2,23 @@ open OUnit2
 
 let printer = fun x -> x
 
-type a1 = int        [@@deriving show]
-type a2 = int32      [@@deriving show]
-type a3 = int64      [@@deriving show]
-type a4 = nativeint  [@@deriving show]
-type a5 = float      [@@deriving show]
-type a6 = bool       [@@deriving show]
-type a7 = char       [@@deriving show]
-type a8 = string     [@@deriving show]
-type a9 = bytes      [@@deriving show]
-type r  = int ref    [@@deriving show]
-type r2 = int Pervasives.ref [@@ocaml.warning "-3"] [@@deriving show]
-type r3 = int Pervasives.ref ref [@@ocaml.warning "-3"] [@@deriving show]
-type l  = int list   [@@deriving show]
-type a  = int array  [@@deriving show]
-type o  = int option [@@deriving show]
-type f  = int -> int [@@deriving show]
-type y  = int lazy_t [@@deriving show]
+type a1 = int        [@@ppx.deriving show]
+type a2 = int32      [@@ppx.deriving show]
+type a3 = int64      [@@ppx.deriving show]
+type a4 = nativeint  [@@ppx.deriving show]
+type a5 = float      [@@ppx.deriving show]
+type a6 = bool       [@@ppx.deriving show]
+type a7 = char       [@@ppx.deriving show]
+type a8 = string     [@@ppx.deriving show]
+type a9 = bytes      [@@ppx.deriving show]
+type r  = int ref    [@@ppx.deriving show]
+type r2 = int Pervasives.ref [@@ocaml.warning "-3"] [@@ppx.deriving show]
+type r3 = int Pervasives.ref ref [@@ocaml.warning "-3"] [@@ppx.deriving show]
+type l  = int list   [@@ppx.deriving show]
+type a  = int array  [@@ppx.deriving show]
+type o  = int option [@@ppx.deriving show]
+type f  = int -> int [@@ppx.deriving show]
+type y  = int lazy_t [@@ppx.deriving show]
 let test_alias ctxt =
   assert_equal ~printer "1"       (show_a1 1);
   assert_equal ~printer "1l"      (show_a2 1l);
@@ -41,14 +41,14 @@ let test_alias ctxt =
   ignore (Lazy.force y);
   assert_equal ~printer "2" (show_y y)
 
-type v = Foo | Bar of int * string | Baz of string [@@deriving show]
+type v = Foo | Bar of int * string | Baz of string [@@ppx.deriving show]
 let test_variant ctxt =
   assert_equal ~printer "Test_deriving_show.Foo"                (show_v Foo);
   assert_equal ~printer "(Test_deriving_show.Bar (1, \"foo\"))" (show_v (Bar (1, "foo")));
   assert_equal ~printer "(Test_deriving_show.Baz \"foo\")"      (show_v (Baz "foo"))
 
 #if OCAML_VERSION >= (4, 03, 0)
-type rv = RFoo | RBar of { x: int; y: string } | RBaz of { z: string } [@@deriving show]
+type rv = RFoo | RBar of { x: int; y: string } | RBaz of { z: string } [@@ppx.deriving show]
 let test_variant_record ctxt =
   assert_equal ~printer "Test_deriving_show.RFoo"
                         (show_rv RFoo);
@@ -58,21 +58,21 @@ let test_variant_record ctxt =
                         (show_rv (RBaz {z="foo"}))
 #endif
 
-type vn = Foo of int option [@@deriving show]
+type vn = Foo of int option [@@ppx.deriving show]
 let test_variant_nest ctxt =
   assert_equal ~printer "(Test_deriving_show.Foo (Some 1))" (show_vn (Foo (Some 1)))
 
-type pv1 = [ `Foo | `Bar of int * string ] [@@deriving show]
+type pv1 = [ `Foo | `Bar of int * string ] [@@ppx.deriving show]
 let test_poly ctxt =
   assert_equal ~printer "`Foo"                (show_pv1 `Foo);
   assert_equal ~printer "`Bar ((1, \"foo\"))" (show_pv1 (`Bar (1, "foo")))
 
-type pv2 = [ `Baz | pv1 ] [@@deriving show]
+type pv2 = [ `Baz | pv1 ] [@@ppx.deriving show]
 let test_poly_inherit ctxt =
   assert_equal ~printer "`Foo" (show_pv2 `Foo);
   assert_equal ~printer "`Baz" (show_pv2 `Baz)
 
-type ty = int * string [@@deriving show]
+type ty = int * string [@@ppx.deriving show]
 let test_tuple ctxt =
   assert_equal ~printer "(1, \"foo\")" (show_ty (1, "foo"))
 
@@ -80,7 +80,7 @@ type re = {
   f1 : int;
   f2 : string;
   f3 : float [@opaque];
-} [@@deriving show]
+} [@@ppx.deriving show]
 let test_record ctxt =
   assert_equal ~printer "{ Test_deriving_show.f1 = 1; f2 = \"foo\"; f3 = <opaque> }"
                         (show_re { f1 = 1; f2 = "foo"; f3 = 1.0 })
@@ -90,7 +90,7 @@ type variant = Foo of {
   f1 : int;
   f2 : string;
   f3 : float [@opaque];
-} [@@deriving show]
+} [@@ppx.deriving show]
 let test_variant_record ctxt =
   assert_equal ~printer
     "Test_deriving_show.Foo {f1 = 1; f2 = \"foo\"; f3 = <opaque>}"
@@ -99,15 +99,15 @@ let test_variant_record ctxt =
 
 
 module M : sig
-  type t = A [@@deriving show]
+  type t = A [@@ppx.deriving show]
 end = struct
-  type t = A [@@deriving show]
+  type t = A [@@ppx.deriving show]
 end
 
 let test_module ctxt =
   assert_equal ~printer "Test_deriving_show.M.A" (M.show M.A)
 
-type z = M.t [@@deriving show]
+type z = M.t [@@ppx.deriving show]
 let test_abstr ctxt =
   assert_equal ~printer "Test_deriving_show.M.A" (show_z M.A)
 
@@ -115,28 +115,28 @@ type file = {
   name : string;
   perm : int     [@printer fun fmt -> Format.fprintf fmt "0o%03o"];
 }
-[@@deriving show]
+[@@ppx.deriving show]
 let test_custom ctxt =
   assert_equal ~printer "{ Test_deriving_show.name = \"dir\"; perm = 0o755 }"
                         (show_file { name = "dir"; perm = 0o755 })
 
-type 'a pt = { v : 'a } [@@deriving show]
+type 'a pt = { v : 'a } [@@ppx.deriving show]
 let test_parametric ctxt =
   assert_equal ~printer "{ Test_deriving_show.v = 1 }"
                         (show_pt (fun fmt -> Format.fprintf fmt "%d") { v = 1 })
 
 type 'a btree = Node of 'a btree * 'a * 'a btree | Leaf
-[@@deriving show]
+[@@ppx.deriving show]
 
 module M' = struct
-  type t = M.t = A [@@deriving show]
+  type t = M.t = A [@@ppx.deriving show]
 end
 let test_alias_path ctxt =
   assert_equal ~printer "M.A" (M'.show M'.A)
 
 let print_hi = fun fmt _ -> Format.fprintf fmt "hi!"
 type polypr = (string [@printer print_hi]) btree [@polyprinter pp_btree]
-[@@deriving show]
+[@@ppx.deriving show]
 let test_polypr ctxt =
   assert_equal ~printer "(Test_deriving_show.Node (Test_deriving_show.Leaf, hi!,\n\
                         \   Test_deriving_show.Leaf))"
@@ -146,20 +146,20 @@ let test_placeholder ctxt =
   assert_equal ~printer "_" ([%show: _] 1)
 
 module rec RecFoo : sig
-  type ('a,'b) t = ('b, 'a) RecBar.t [@@deriving show]
+  type ('a,'b) t = ('b, 'a) RecBar.t [@@ppx.deriving show]
 end = struct
-  type ('a,'b) t = ('b,'a) RecBar.t [@@deriving show]
+  type ('a,'b) t = ('b,'a) RecBar.t [@@ppx.deriving show]
 end
 and RecBar : sig
-  type ('b, 'a) t = 'b * 'a [@@deriving show]
+  type ('b, 'a) t = 'b * 'a [@@ppx.deriving show]
 end = struct
-  type ('b,'a) t = 'b * 'a [@@deriving show]
+  type ('b,'a) t = 'b * 'a [@@ppx.deriving show]
 end
 
 
 type foo = F of int | B of int bar | C of float bar
 and 'a bar = { x : 'a ; r : foo }
-[@@deriving show]
+[@@ppx.deriving show]
 
 let test_mrec ctxt =
   let e1 =  B { x = 12; r = F 16 } in
@@ -167,7 +167,7 @@ let test_mrec ctxt =
 
 
 #if OCAML_VERSION >= (4, 03, 0)
-type i_has_result = I_has of (bool, string) result [@@deriving show]
+type i_has_result = I_has of (bool, string) result [@@ppx.deriving show]
 
 let test_result ctxt =
   assert_equal ~printer "(Ok 100)"
@@ -178,7 +178,7 @@ let test_result ctxt =
     (show_i_has_result (I_has (Error "err")))
 #endif
 
-type i_has_result_result = I_has of (bool, string) Result.result [@@deriving show]
+type i_has_result_result = I_has of (bool, string) Result.result [@@ppx.deriving show]
 
 let test_result_result ctxt =
   let open Result in
@@ -196,7 +196,7 @@ and bool =
   | Bfoo of int * (int -> int)
 and string =
   | Sfoo of String.t * (int -> int)
-[@@deriving show]
+[@@ppx.deriving show]
 
 let test_std_shadowing ctxt =
   let e1 = ESBool (Bfoo (1, (+) 1)) in
@@ -210,17 +210,17 @@ let test_std_shadowing ctxt =
 
 type poly_app = float poly_abs
 and 'a poly_abs = 'a
-[@@deriving show]
+[@@ppx.deriving show]
 
 let test_poly_app ctxt =
   assert_equal ~printer "1." (show_poly_app 1.0)
 
 module List = struct
   type 'a t = [`Cons of 'a | `Nil]
-  [@@deriving show]
+  [@@ppx.deriving show]
 end
 type 'a std_clash = 'a List.t option
-[@@deriving show]
+[@@ppx.deriving show]
 
 type variant_printer =
   | First [@printer fun fmt _ -> Format.pp_print_string fmt "first"]
@@ -228,7 +228,7 @@ type variant_printer =
   | Third
   | Fourth of int * int
                 [@printer fun fmt (a,b) -> fprintf fmt "fourth: %d %d" a b]
-[@@deriving show]
+[@@ppx.deriving show]
 
 let test_variant_printer ctxt =
   assert_equal ~printer
@@ -240,10 +240,10 @@ let test_variant_printer ctxt =
   assert_equal ~printer
     "fourth: 8 4" (show_variant_printer (Fourth(8,4)))
 
-type no_full    = NoFull   of int [@@deriving show { with_path = false }]
-type with_full  = WithFull of int [@@deriving show { with_path = true  }]
+type no_full    = NoFull   of int [@@ppx.deriving show { with_path = false }]
+type with_full  = WithFull of int [@@ppx.deriving show { with_path = true  }]
 module WithFull = struct
-  type t = A of int [@@deriving show ]
+  type t = A of int [@@ppx.deriving show ]
 end
 let test_paths_printer ctxt =
   assert_equal ~printer "(NoFull 1)"   (show_no_full   (NoFull 1));

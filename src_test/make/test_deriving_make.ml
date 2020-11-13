@@ -7,7 +7,7 @@ module M : sig
     a3  : int [@default 42];
     a4s : (int * int list) [@split];
     a5  : int;
-  } [@@deriving show, make]
+  } [@@ppx.deriving show, make]
 
   type b = {
     b1  : int option;
@@ -15,12 +15,12 @@ module M : sig
     b3  : int [@default 42];
     b4s : (int * int list) [@split];
     b5  : int [@main];
-  } [@@deriving show, make]
+  } [@@ppx.deriving show, make]
 
   type c = {
     c1 : int;
     c2 : string
-  } [@@deriving show, make]
+  } [@@ppx.deriving show, make]
 end = struct
   type a = {
     a1  : int option;
@@ -28,7 +28,7 @@ end = struct
     a3  : int [@default 42];
     a4s : (int * int list) [@split];
     a5  : int;
-  } [@@deriving show, make]
+  } [@@ppx.deriving show, make]
 
   type b = {
     b1  : int option;
@@ -36,12 +36,12 @@ end = struct
     b3  : int [@default 42];
     b4s : (int * int list) [@split];
     b5  : int [@main];
-  } [@@deriving show, make]
+  } [@@ppx.deriving show, make]
 
   type c = {
     c1 : int;
     c2 : string
-  } [@@deriving show, make]
+  } [@@ppx.deriving show, make]
 end
 
 let test_no_main ctxt =

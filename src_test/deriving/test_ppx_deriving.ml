@@ -10,12 +10,12 @@ let test_inline_shorthand ctxt =
                "[(1, 1); (2, 0)]" ([%show: (int * int) list] [(1,1); (2,0)])
 
 type optional_deriver = string
-[@@deriving missing { optional = true }]
+[@@ppx.deriving missing { optional = true }]
 
 type prefix = {
   field : int [@deriving.eq.compare fun _ _ -> true]
 }
-[@@deriving eq]
+[@@ppx.deriving eq]
 
 let test_prefix ctxt =
   assert_equal true (equal_prefix {field=1} {field=2})
@@ -24,7 +24,7 @@ let test_hash_variant ctxt =
   ["a"; "b"; "c"; "Dd"] |> List.iter (fun x ->
     assert_equal (Btype.hash_variant x) (Ppx_deriving.hash_variant x))
 
-let suite = "Test ppx_deriving" >::: [
+let suite = "Test ppx.deriving" >::: [
     "test_inline"           >:: test_inline;
     "test_inline_shorthand" >:: test_inline_shorthand;
   ]

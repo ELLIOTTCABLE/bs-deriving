@@ -523,7 +523,7 @@ type deriver_options =
   | Unknown_syntax
 
 let derive path pstr_loc item attributes fn arg =
-  let deriving = find_attr "deriving" attributes in
+  let deriving = find_attr "ppx.deriving" attributes in
   let deriver_exprs, loc =
     match deriving with
     | Some (PStr [{ pstr_desc = Pstr_eval (
@@ -654,25 +654,25 @@ let mapper =
   let structure mapper items =
     match items with
     | { pstr_desc = Pstr_type(_, typ_decls) as pstr_desc ; pstr_loc } :: rest when
-        List.exists (fun ty -> has_attr "deriving" ty.ptype_attributes) typ_decls
+        List.exists (fun ty -> has_attr "ppx.deriving" ty.ptype_attributes) typ_decls
         && pstr_desc_rec_flag pstr_desc = Nonrecursive ->
       raise_errorf ~loc:pstr_loc "The nonrec flag is not supported by ppx_deriving"
     | { pstr_desc = Pstr_type(_, typ_decls); pstr_loc } as item :: rest when
-        List.exists (fun ty -> has_attr "deriving" ty.ptype_attributes) typ_decls ->
+        List.exists (fun ty -> has_attr "ppx.deriving" ty.ptype_attributes) typ_decls ->
       let derived =
         Ast_helper.with_default_loc pstr_loc (fun () ->
           derive_type_decl module_nesting typ_decls pstr_loc item
             (fun deriver -> deriver.type_decl_str))
       in derived @ mapper.Ast_mapper.structure mapper rest
     | { pstr_desc = Pstr_typext typ_ext; pstr_loc } as item :: rest when
-          has_attr "deriving" typ_ext.ptyext_attributes ->
+          has_attr "ppx.deriving" typ_ext.ptyext_attributes ->
       let derived =
         Ast_helper.with_default_loc pstr_loc (fun () ->
           derive_type_ext module_nesting typ_ext pstr_loc item
             (fun deriver -> deriver.type_ext_str))
       in derived @ mapper.Ast_mapper.structure mapper rest
     | { pstr_desc = Pstr_modtype modtype; pstr_loc } as item :: rest when
-          has_attr "deriving" modtype.pmtd_attributes ->
+          has_attr "ppx.deriving" modtype.pmtd_attributes ->
       let derived =
         Ast_helper.with_default_loc pstr_loc (fun () ->
           derive_module_type_decl module_nesting modtype pstr_loc item
@@ -699,21 +699,21 @@ let mapper =
   let signature mapper items =
     match items with
     | { psig_desc = Psig_type(_, typ_decls); psig_loc } as item :: rest when
-        List.exists (fun ty -> has_attr "deriving" ty.ptype_attributes) typ_decls ->
+        List.exists (fun ty -> has_attr "ppx.deriving" ty.ptype_attributes) typ_decls ->
       let derived =
         Ast_helper.with_default_loc psig_loc (fun () ->
           derive_type_decl module_nesting typ_decls psig_loc item
             (fun deriver -> deriver.type_decl_sig))
       in derived @ mapper.Ast_mapper.signature mapper rest
     | { psig_desc = Psig_typext typ_ext; psig_loc } as item :: rest when
-        has_attr "deriving" typ_ext.ptyext_attributes ->
+        has_attr "ppx.deriving" typ_ext.ptyext_attributes ->
       let derived =
         Ast_helper.with_default_loc psig_loc (fun () ->
           derive_type_ext module_nesting typ_ext psig_loc item
             (fun deriver -> deriver.type_ext_sig))
       in derived @ mapper.Ast_mapper.signature mapper rest
     | { psig_desc = Psig_modtype modtype; psig_loc } as item :: rest when
-        has_attr "deriving" modtype.pmtd_attributes ->
+        has_attr "ppx.deriving" modtype.pmtd_attributes ->
       let derived =
         Ast_helper.with_default_loc psig_loc (fun () ->
           derive_module_type_decl module_nesting modtype psig_loc item
@@ -761,6 +761,6 @@ let hash_variant s =
 (* This is only used when ppx_deriving is linked as part of an ocaml-migrate-parsetre
    driver. *)
 let () =
-  Migrate_parsetree.Driver.register ~name:"ppx_deriving"
+  Migrate_parsetree.Driver.register ~name:"ppx.deriving"
     (module Migrate_parsetree.OCaml_current)
     (fun _ _ -> mapper)

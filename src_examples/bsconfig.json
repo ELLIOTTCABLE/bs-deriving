@@ -9,7 +9,7 @@
          "type": "dev"
       }
    ],
-   "ppx-flags": ["ppx-deriving/ppx.js"],
+   "ppx-flags": ["../ppx-deriving/ppx.js"],
    "bs-dependencies": ["@elliottcable/bs-result"],
    "package-specs": {
       "module": "commonjs",

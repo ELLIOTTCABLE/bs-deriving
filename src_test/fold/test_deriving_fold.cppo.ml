@@ -1,7 +1,7 @@
 open OUnit2
 
 type 'a btree = Node of 'a btree * 'a * 'a btree | Leaf
-[@@deriving fold]
+[@@ppx.deriving fold]
 
 let test_btree ctxt =
   let btree  = (Node (Node (Leaf, 3, Leaf), 1, Node (Leaf, 2, Leaf))) in
@@ -9,7 +9,7 @@ let test_btree ctxt =
 
 type 'a reflist = 'a Pervasives.ref list
 [@@ocaml.warning "-3"]
-[@@deriving fold]
+[@@ppx.deriving fold]
 
 let test_reflist ctxt =
   let reflist  = [ ref 3 ; ref 2 ; ref 1 ] in
@@ -17,14 +17,14 @@ let test_reflist ctxt =
 
 #if OCAML_VERSION >= (4, 03, 0)
 type 'a btreer = Node of { lft: 'a btree; elt: 'a; rgt: 'a btree } | Leaf
-[@@deriving fold]
+[@@ppx.deriving fold]
 #endif
 
 type 'a ty = 'a * int list
-[@@deriving fold]
+[@@ppx.deriving fold]
 
 #if OCAML_VERSION >= (4, 03, 0)
-type ('a, 'b) res = ('a, 'b) result [@@deriving fold]
+type ('a, 'b) res = ('a, 'b) result [@@ppx.deriving fold]
 
 let test_result ctxt =
   let f = fold_res (+) (-) in
@@ -32,7 +32,7 @@ let test_result ctxt =
   assert_equal ~printer:string_of_int (-1) (f 0 (Error 1))
 #endif
 
-type ('a, 'b) result_res = ('a, 'b) Result.result [@@deriving fold]
+type ('a, 'b) result_res = ('a, 'b) Result.result [@@ppx.deriving fold]
 
 let test_result_result ctxt =
   let f = fold_result_res (+) (-) in

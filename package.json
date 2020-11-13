@@ -8,7 +8,7 @@
   },
   "devDependencies": {
     "archiver": "^3.0.0",
-    "bs-platform": "^8.0.0",
+    "bs-platform": "^8.3.0",
     "cpy": "^7.2.0",
     "make-dir": "^3.0.0",
     "node-jq": "^1.9.0",
