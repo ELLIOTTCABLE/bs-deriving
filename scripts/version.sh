@@ -75,7 +75,7 @@ if [ "$NEW_VERSION" = "$OLD_VERSION" ]; then
    pute 'You may have called this directly by accident; this script is intended to be'
    pute 'called from the `version` lifecycle. Try the following, instead:'
    puts '' >&2
-   puts '      npm version patch --no-git-tag-version' >&2
+   puts '      npm version --preid=compat patch --no-git-tag-version' >&2
    puts '' >&2
    exit 2
 fi
@@ -105,7 +105,7 @@ step_2() {
    printf %s 'Update ppx-deriving/package.json to match? [Y/n] '; read yn
    if [ "$yn" != "${yn#[Yy]}" ]; then
       (  cd ./ppx-deriving && \
-         npm version --no-git-tag-version "$NEW_VERSION" && \
+         npm version --preid=compat --no-git-tag-version "$NEW_VERSION" && \
          git add package.json bsconfig.json package-lock.json) || exit 127
    else
       exit 4
@@ -266,7 +266,7 @@ step_10() {
    printf %s "Publish 'ppx-deriving@$NEW_VERSION' to npm? [Y/n] "; read yn
    if [ "$yn" != "${yn#[Yy]}" ]; then
       (  cd ./ppx-deriving && \
-         npm publish ) || exit 127
+         npm publish --tag compat ) || exit 127
    else
       exit 4
    fi
@@ -336,7 +336,7 @@ step_14() {
       rm "bs-deriving-$NEW_VERSION.tgz" || exit 127
    printf %s "Publish 'bs-deriving@$NEW_VERSION' to npm? [Y/n] "; read yn
    if [ "$yn" != "${yn#[Yy]}" ]; then
-      npm publish || exit 127
+      npm publish --tag compat || exit 127
    else
       exit 4
    fi
