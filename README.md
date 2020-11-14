@@ -1,9 +1,11 @@
-<h1><img alt='Maintenance status: maintained' src="https://img.shields.io/maintenance/yes/2019.svg?style=popout-square&logo=verizon&logoColor=000000" align=right><a href="https://github.com/ELLIOTTCABLE/bs-deriving/releases" align=right><img alt='Latest npm release' src="https://img.shields.io/npm/v/bs-deriving.svg?style=popout-square&logo=npm&label=bs%20version" align=right></a><a target="_blank" href="https://travis-ci.com/ELLIOTTCABLE/bs-deriving" align=right><img alt='Build status on Travis-CI' src="https://img.shields.io/travis/com/ELLIOTTCABLE/bs-deriving.svg?style=popout-square&logo=travis&label=bs%20build" align=right></a><a target="_blank" href="https://twitter.com/intent/follow?screen_name=ELLIOTTCABLE" align=right><img alt='Follow my work on Twitter' src="https://img.shields.io/twitter/follow/ELLIOTTCABLE.svg?style=popout-square&logo=twitter&label=%40ELLIOTTCABLE&color=blue" align=right></a>
+<h1><img alt='Maintenance status: maintained' src="https://img.shields.io/maintenance/yes/2020.svg?style=popout-square&logo=verizon&logoColor=000000" align=right><a href="https://github.com/ELLIOTTCABLE/bs-deriving/releases" align=right><img alt='Latest npm release' src="https://img.shields.io/npm/v/bs-deriving.svg?style=popout-square&logo=npm&label=bs%20version" align=right></a><a target="_blank" href="https://travis-ci.com/ELLIOTTCABLE/bs-deriving" align=right><img alt='Build status on Travis-CI' src="https://img.shields.io/travis/com/ELLIOTTCABLE/bs-deriving.svg?style=popout-square&logo=travis&label=bs%20build" align=right></a><a target="_blank" href="https://twitter.com/intent/follow?screen_name=ELLIOTTCABLE" align=right><img alt='Follow my work on Twitter' src="https://img.shields.io/twitter/follow/ELLIOTTCABLE.svg?style=popout-square&logo=twitter&label=%40ELLIOTTCABLE&color=blue" align=right></a>
 <code>bs-deriving</code></h1>
 
-> **For details on purpose, usage, and API of @@deriving, [scroll down](#deriving).** These
+> **For details on purpose, usage, and API of @@ppx.deriving, [scroll down](#deriving).** These
 > sections added at the top is specific to ways that installation and usage of the `bs-deriving`
 > distribution **differ** from using the upstream release.
+
+# Documentation below describes installation and usage process with `bs-platform@>=8.3.0`.  For usage with older versions please refer to [this version][old_docs] of README
 
 This repository contains a fork of the [ppx_deriving][] type-driven code-generation tooling for
 OCaml-family languages, packaged for use in projects utilizing [BuckleScript][] (an
@@ -18,6 +20,7 @@ them!
 
    [ppx_deriving]: <https://github.com/ocaml-ppx/ppx_deriving>
       "The upstream distribution of ppx_deriving, maintained by the OCaml community"
+   [old_docs]: <https://github.com/ELLIOTTCABLE/bs-deriving/blob/1f8627abe4a1bba3b5046a047be55f3cbe82cf9b/README.md>
    [BuckleScript]: <https://bucklescript.github.io/>
    [ReasonML]: <https://reasonml.github.io/>
    [ppx-deriving]: <https://www.npmjs.com/package/ppx-deriving>
@@ -59,14 +62,16 @@ Instead:
 2. Add the ppx transformer to your `"devDependencies"`:
 
    ```sh
-   $ npm install --save-dev ppx-deriving
+   # for bs-platform@>=8.3.0
+   $ npm install --save-dev ppx-deriving@compat
    ```
 
 3. Add the runtime package (this one!) to your direct `"dependencies"` (this time, for both
    libraries and apps 🤣):
 
    ```sh
-   $ npm install --save bs-deriving
+   # for bs-platform@>=8.3.0
+   $ npm install --save-dev bs-deriving@compat
    ```
 
 4. Manually add it (the runtime package, `bs-deriving`) to your `bsconfig.json`'s `bs-dependencies`
@@ -131,7 +136,7 @@ developers][parsing-tips] over there as well. 😊
 
 ### Original README below
 
-[@@deriving]
+[@@ppx.deriving]
 ============
 
 _deriving_ is a library simplifying type-driven code generation on OCaml >=4.02.
@@ -169,32 +174,32 @@ If you are using another buildsystem, just make sure it passes `-package ppx_der
 Usage
 -----
 
-From a user's perspective, _deriving_ is triggered by a `[@@deriving plugin]` annotation attached to a type declaration in structure or signature:
+From a user's perspective, _deriving_ is triggered by a `[@@ppx.deriving plugin]` annotation attached to a type declaration in structure or signature:
 
 ``` ocaml
 type point2d = float * float
-[@@deriving show]
+[@@ppx.deriving show]
 ```
 
 It's possible to invoke several plugins by separating their names with commas:
 
 ``` ocaml
 type point3d = float * float * float
-[@@deriving show, eq]
+[@@ppx.deriving show, eq]
 ```
 
 It's possible to pass options to a plugin by appending a record to plugin's name:
 
 ``` ocaml
 type t = string
-[@@deriving yojson { strict = true }]
+[@@ppx.deriving yojson { strict = true }]
 ```
 
 It's possible to make _deriving_ ignore a missing plugin rather than raising an error by passing an `optional = true` option, for example, to enable conditional compilation:
 
 ``` ocaml
 type addr = string * int
-[@@deriving yojson { optional = true }]
+[@@ppx.deriving yojson { optional = true }]
 ```
 
 It's also possible for many plugins to derive a function directly from a type, without declaring it first.
@@ -216,7 +221,7 @@ At first, it may look like _deriving_ requires complete control of the type decl
 ``` ocaml
 # module M = struct
   type myfpclass = fpclass = FP_normal | FP_subnormal | FP_zero | FP_infinite | FP_nan
-  [@@deriving show]
+  [@@ppx.deriving show]
 end;;
 module M :
   sig
@@ -257,7 +262,7 @@ Plugin: show
 _show_ derives a function that inspects a value; that is, pretty-prints it with OCaml syntax. However, _show_ offers more insight into the structure of values than the Obj-based pretty printers (e.g. `Printexc`), and more flexibility than the toplevel printer.
 
 ``` ocaml
-# type t = [ `A | `B of int ] [@@deriving show];;
+# type t = [ `A | `B of int ] [@@ppx.deriving show];;
 type t = [ `A | `B of i ]
 val pp : Format.formatter -> [< `A | `B of i ] -> unit = <fun>
 val show : [< `A | `B of i ] -> string = <fun>
@@ -273,7 +278,7 @@ _show_ allows to specify custom formatters for types to override default behavio
 # type file = {
   name : string;
   perm : int     [@printer fun fmt -> fprintf fmt "0o%03o"];
-} [@@deriving show];;
+} [@@ppx.deriving show];;
 # show_file { name = "dir"; perm = 0o755 };;
 - : string = "{ name = \"dir\"; perm = 0o755 }"
 ```
@@ -286,7 +291,7 @@ The function `fprintf` is locally defined in the printer.
 
 By default all constructors are printed with prefix which is dot-separated filename and module path. For example
 ``` ocaml
-# module X = struct type t = C [@@deriving show] end;;
+# module X = struct type t = C [@@ppx.deriving show] end;;
 ...
 # X.(show C);;
 - : string = "X.C"
@@ -295,7 +300,7 @@ By default all constructors are printed with prefix which is dot-separated filen
 This code will create printers which return the string `X.C`, `X` is a module path and `C` is a constructor name. File's name is omitted in the toplevel. To skip all module paths the one needs to derive show with option `with_path` (which defaults to `true`)
 
 ``` ocaml
-# module X = struct type t = C [@@deriving show { with_path = false }] end;;
+# module X = struct type t = C [@@ppx.deriving show { with_path = false }] end;;
 ...
 # X.(show C);;
 - : string = "C"
@@ -308,7 +313,7 @@ Plugins: eq and ord
 _eq_ derives a function comparing values by semantic equality; structural or physical depending on context. _ord_ derives a function defining a total order for values, returning a negative value if lower, `0` if equal or a positive value if greater. They're similar to `Pervasives.(=)` and `Pervasives.compare`, but are faster, allow to customize the comparison rules, and never raise at runtime. _eq_ and _ord_ are short-circuiting.
 
 ``` ocaml
-# type t = [ `A | `B of int ] [@@deriving eq, ord];;
+# type t = [ `A | `B of int ] [@@ppx.deriving eq, ord];;
 type t = [ `A | `B of int ]
 val equal : [> `A | `B of int ] -> [> `A | `B of int ] -> bool = <fun>
 val compare : [ `A | `B of int ] -> [ `A | `B of int ] -> int = <fun>
@@ -330,7 +335,7 @@ _eq_ and _ord_ allow to specify custom comparison functions for types to overrid
 # type file = {
   name : string [@equal fun a b -> String.(lowercase a = lowercase b)];
   perm : int    [@compare fun a b -> compare b a]
-} [@@deriving eq, ord];;
+} [@@ppx.deriving eq, ord];;
 type file = { name : bytes; perm : int; }
 val equal_file : file -> file -> bool = <fun>
 val compare_file : file -> file -> int = <fun>
@@ -346,7 +351,7 @@ Plugin: enum
 _enum_ is a plugin that treats variants with argument-less constructors as enumerations with an integer value assigned to every constructor. _enum_ derives functions to convert the variants to and from integers, and minimal and maximal integer value.
 
 ``` ocaml
-# type insn = Const | Push | Pop | Add [@@deriving enum];;
+# type insn = Const | Push | Pop | Add [@@ppx.deriving enum];;
 type insn = Const | Push | Pop | Add
 val insn_to_enum : insn -> int = <fun>
 val insn_of_enum : int -> insn option = <fun>
@@ -366,7 +371,7 @@ Plugins: iter, map and fold
 _iter_, _map_ and _fold_ are three closely related plugins that generate code for traversing polymorphic data structures in lexical order and applying a user-specified action to all values corresponding to type variables.
 
 ``` ocaml
-# type 'a btree = Node of 'a btree * 'a * 'a btree | Leaf [@@deriving iter, map, fold];;
+# type 'a btree = Node of 'a btree * 'a * 'a btree | Leaf [@@ppx.deriving iter, map, fold];;
 type 'a btree = Node of 'a btree * 'a * 'a btree | Leaf
 val iter_btree : ('a -> unit) -> 'a btree -> unit = <fun>
 val map_btree : ('a -> 'b) -> 'a btree -> 'b btree = <fun>
@@ -396,7 +401,7 @@ type record = {
   def  : int [@default 42];
   args : (int * int list) [@split];
   norm : int;
-} [@@deriving make];;
+} [@@ppx.deriving make];;
 val make_record :
   ?opt:int ->
   ?lst:int list ->
@@ -444,7 +449,7 @@ A _deriving_ plugin is packaged as a Findlib library; this library should includ
 
 ```
 version = "1.0"
-description = "[@@deriving yojson]"
+description = "[@@ppx.deriving yojson]"
 exists_if = "ppx_deriving_yojson.cma"
 # The following part affects batch compilation and toplevel.
 # The plugin package may require any runtime component it needs.
@@ -456,7 +461,7 @@ archive(ppx_driver, byte) = "ppx_deriving_yojson.cma"
 archive(ppx_driver, native) = "ppx_deriving_yojson.cmxa"
 ```
 
-The module(s) provided by the package in the `ppxopt` variable must register the derivers using `Ppx_deriving.register "foo"` during loading. Any number of derivers may be registered; careful registration would allow a _yojson_ deriver to support all three of `[@@deriving yojson]`, `[@@deriving of_yojson]` and `[@@deriving to_yojson]`, as well as `[%derive.of_yojson:]` and `[%derive.to_yojson:]`.
+The module(s) provided by the package in the `ppxopt` variable must register the derivers using `Ppx_deriving.register "foo"` during loading. Any number of derivers may be registered; careful registration would allow a _yojson_ deriver to support all three of `[@@ppx.deriving yojson]`, `[@@ppx.deriving of_yojson]` and `[@@ppx.deriving to_yojson]`, as well as `[%derive.of_yojson:]` and `[%derive.to_yojson:]`.
 
 It is possible to test the plugin without installing it by instructing _deriving_ to load it directly; the compiler should be invoked as `ocamlfind c -package ppx_deriving -ppxopt ppx_deriving,src/ppx_deriving_foo.cma ...`. The file extension is replaced with `.cmxs` automatically for native builds. This can be integrated with buildsystem, e.g. for ocamlbuild:
 
@@ -480,7 +485,7 @@ The main ppx_deriving binary can be used to output preprocessed source code in a
 ```
 $ cat test.ml
 type foo = A of int | B of float
-[@@deriving show]
+[@@ppx.deriving show]
 $ ocamlfind ppx_deriving/ppx_deriving \
     -deriving-plugin `ocamlfind query ppx_deriving`/ppx_deriving_show.cma \
     test.ml
@@ -488,7 +493,7 @@ $ ocamlfind ppx_deriving/ppx_deriving \
 ``` ocaml
 type foo =
   | A of int
-  | B of float [@@deriving show]
+  | B of float [@@ppx.deriving show]
 let rec (pp_foo : Format.formatter -> foo -> Ppx_deriving_runtime.unit) =
   ((let open! Ppx_deriving_runtime in
       fun fmt  ->
@@ -513,7 +518,7 @@ _deriving_ is a thin wrapper over the ppx rewriter system. Indeed, it includes v
 
 As such, _deriving_:
 
-  * Completely defines the syntax of `[@@deriving]` annotation and unifies the plugin discovery mechanism;
+  * Completely defines the syntax of `[@@ppx.deriving]` annotation and unifies the plugin discovery mechanism;
   * Provides an unified, strict option parsing API to plugins;
   * Provides helpers for parsing annotations to ensure that the plugins interoperate with each other and the rest of the ecosystem.
 
